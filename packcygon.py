@@ -1,3 +1,8 @@
+bl_info = {
+"name":"Packcygon",
+"category":"Object"
+}
+
 import bpy
 from copy import copy
 from math import sqrt
