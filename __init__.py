@@ -174,3 +174,7 @@ class CYGON_OT_pack(bpy.types.Operator):
 
 def register():
     bpy.utils.register_class(CYGON_OT_pack)
+    bpy.utils.register_class(CYGON_OT_packmodal)
+def unregister():
+    bpy.utils.unregister_class(CYGON_OT_pack)
+    bpy.utils.unregister_class(CYGON_OT_packmodal)
