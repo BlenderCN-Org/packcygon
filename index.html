@@ -31,6 +31,20 @@ body {
         <p>Objects must have dimension along X and Y, thus empties, cameras and lamps are not considered.</p>
         <p>An adjustible "fudge factor" fine-tunes the guess for target footprint size.</p>
         <small>The downloaded zip can be installed via Blender's user-preferences.</small>
+        <p>There are two operators:</p>
+        <ul>
+        <li>cygon pack</li>
+        <li>cygon packmodal</li>
+        </ul>
+        <p>The non-modal one just uses a preset default guess.</p>
+        <p>The modal one lets you adjust the amount of guess with the mouse wheel.</p>
+        <p>Too much guess, not enough guess, negative fudge-factor? Then the output will look like an ell-shape or just a scattered mess.
+        Things may end up off in some crazy direction.  You may have to undo and retry. You may have to zoom out.</p>
+        <p> You may have to repeat multiple times if you want to make it through thousands of objects. </p>
+        <p> Apply rotation and scale to the objects.  Clear the positions of the objects.  Select the objects.  Press the spacebar.  Type cyg... </p>
+        <p>If using modal, wheel up for more fudge.  Wheel down for less fudge. Left mouse, right-mouse, escape or return to be done with it.</p>
+        <hr />
+        <p><em>No height.  This is 2d bin-packing.  Maybe someone will extend this into the third dimension.  That probably will not be me.</em></p>
     </article>
 </div>
 </body>
