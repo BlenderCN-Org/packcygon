@@ -18,6 +18,7 @@
 
 bl_info = {
 "name":"Packcygon",
+"author":"dustractor",
 "category":"Object"
 }
 
