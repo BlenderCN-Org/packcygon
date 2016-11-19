@@ -25,6 +25,8 @@ bl_info = {
 import bpy
 from copy import copy
 from math import sqrt
+
+
 class Rect(object):
     """Represent a rectangle in the BinPack tree."""
     def __init__(self, x1, y1, x2, y2):
@@ -85,7 +87,9 @@ class Rect(object):
 
 
 class BinPackNode(object):
-    """A Node in a tree of recursively smaller areas within which images can be placed."""
+    """ A Node in a tree of recursively smaller areas within which
+        images can be placed.
+    """
     def __init__(self, area):
         self.area = area
         self.leftchild = None
@@ -95,10 +99,17 @@ class BinPackNode(object):
         return "<%s %s>" % (self.__class__.__name__, str(self.area))
     def insert(self, newarea):
         if self.leftchild and self.rightchild:
-            return self.leftchild.insert(newarea) or self.rightchild.insert(newarea)
-        if self.filled or newarea.width > self.area.width or newarea.height > self.area.height:
+            return (
+                    self.leftchild.insert(newarea) or
+                    self.rightchild.insert(newarea))
+        if (
+                self.filled or
+                (newarea.width > self.area.width) or
+                (newarea.height > self.area.height)):
             return None
-        if self.area.width == newarea.width and self.area.height == newarea.height:
+        if (
+                (self.area.width == newarea.width) and
+                (self.area.height == newarea.height)):
             self.filled = True
             return self.area
         leftarea = copy(self.area)
@@ -126,7 +137,10 @@ def pack(oblist,fudge):
     adjust = ( min(T_width,T_height) / max(T_width,T_height)) + fudge
     print(adjust)
     side = int(sqrt(T_area) * adjust)
-    obs = sorted(oblist, key=lambda ob:ob.dimensions[0] * ob.dimensions[1],reverse=True)
+    obs = sorted(
+            oblist,
+            key=lambda ob:ob.dimensions[0] * ob.dimensions[1],
+            reverse=True)
     Wdim,Hdim = [side]*2
     tree = BinPackNode(Rect(0, 0, Wdim,Hdim))
     for ob in obs:
@@ -136,45 +150,24 @@ def pack(oblist,fudge):
         if coords:
             ob.location[0] = coords.left
             ob.location[1] = coords.bottom
-    
-    
 
 
-class CYGON_OT_packmodal(bpy.types.Operator):
-    bl_idname = "cygon.packmodal"
-    bl_label = "cygon packmodal"
-    fudge = bpy.props.FloatProperty(default = 0.1)
-    def invoke(self,context,event):
-        context.window_manager.modal_handler_add(self)
-        self.execute(context)
-        return {"RUNNING_MODAL"}
-    def modal(self,context,event):
-        if event.type in {"RIGHTMOUSE","ESC"}:
-            return {"CANCELLED"}
-        elif event.type in {"LEFTMOUSE","RET"}:
-            return {"FINISHED"}
-        elif event.type == "WHEELUPMOUSE":
-            self.fudge += 0.1
-        elif event.type == "WHEELDOWNMOUSE":
-            self.fudge -= 0.1
-        self.execute(context)
-        return {"RUNNING_MODAL"}
- 
+class CYGON_OT_cygon_pack_objects(bpy.types.Operator):
+    bl_idname = "cygon.pack_objects"
+    bl_label = "cygon pack objects"
+    fudge = bpy.props.FloatProperty(default = 0.1,precision=7)
+    bl_options =  {"REGISTER","UNDO"}
+    def draw(self,context):
+        self.layout.prop(self,"fudge")
     def execute(self,context):
-        obs = context.selected_objects
-        pack(obs,self.fudge)
+        pack(context.selected_objects,self.fudge)
         return {"FINISHED"}
-class CYGON_OT_pack(bpy.types.Operator):
-    bl_idname = "cygon.pack"
-    bl_label = "cygon pack"
-    def execute(self,context):
-        obs = context.selected_objects
-        pack(obs,0.11)
-        return {"FINISHED"}
+
+
 
 def register():
-    bpy.utils.register_class(CYGON_OT_pack)
-    bpy.utils.register_class(CYGON_OT_packmodal)
+    bpy.utils.register_class(CYGON_OT_cygon_pack_objects)
+
 def unregister():
-    bpy.utils.unregister_class(CYGON_OT_pack)
-    bpy.utils.unregister_class(CYGON_OT_packmodal)
+    bpy.utils.unregister_class(CYGON_OT_cygon_pack_objects)
+
